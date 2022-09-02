@@ -1,5 +1,7 @@
 from influxdb_client import InfluxDBClient, Dialect
 import csv, os, datetime, glob, tarfile, sys
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
 for fname in os.listdir("output"):
     if fname.endswith(".csv"):
@@ -80,6 +82,32 @@ with tarfile.open(os.getcwd() + "/output/" + comp_filename, "w:gz") as tar:
 
 for file in csvlist:
     os.remove(file)
+
+# Upload to Google Drive
+if os.path.exists("client_secrets.json"):
+    gauth = GoogleAuth()
+    # Try to load saved client credentials
+    gauth.LoadCredentialsFile("lobster_creds.txt")
+    if gauth.credentials is None:
+        # Authenticate if they're not there
+        gauth.LocalWebserverAuth()
+    elif gauth.access_token_expired:
+        # Refresh them if expired
+        gauth.Refresh()
+    else:
+        # Initialize the saved creds
+        gauth.Authorize()
+    # Save the current credentials to a file
+    gauth.SaveCredentialsFile("lobster_creds.txt")
+    # create GoogleDrive instance
+    drive = GoogleDrive(gauth)
+    # upload file to Lobster Folder
+    drivefile = drive.CreateFile({'title': comp_filename,'parents': [{'id': '1SCQWiExyhl0Qn8kgxEyTVIYitIMjXwv-'}]})
+    drivefile.SetContentFile(os.getcwd() + "/output/" + comp_filename)
+    drivefile.Upload()
+else:
+    print("client_secrets.json not found. Please get it from Google Dev Console Website. For automated drive upload.")
+
 #csv_result = query_api.query_csv('from(bucket:"cifxdata") |> range(start: 2022-08-22T00:00:00Z, stop: 2022-08-22T23:59:59Z)', dialect=Dialect(header=True, delimiter=',', annotations=[], date_time_format="RFC3339"))
 
 """ val_count = 0

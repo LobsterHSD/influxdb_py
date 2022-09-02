@@ -1,3 +1,6 @@
 *.csv
 codeschnipsel.py
 output/
+client_secrets.json
+lobster_creds.txt
+drive.py
