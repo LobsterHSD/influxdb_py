@@ -3,6 +3,18 @@ import csv, os, datetime, glob, tarfile, sys
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 
+if not os.path.exists("client_secrets.json"):
+    while True:
+        userChoice = input("client_secrets.json not found. No GDrive upload will occur! Would you like to continue anyway? (y/n) ")
+        if userChoice != "y" and userChoice != "n":
+            print("Invalid input. Please enter y or n.")
+            continue
+        if userChoice == "y":
+            print("Continuing without Drive upload...")
+            break
+        else:
+            sys.exit("Exiting...")
+
 for fname in os.listdir("output"):
     if fname.endswith(".csv"):
         sys.exit("Please remove all CSV files from output folder before running this script.")
