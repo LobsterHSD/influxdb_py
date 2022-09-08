@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "influxdb-py"
+version = "0.1.0"
+description = "retrieve influxdb data, compress and upload to GDrive"
+authors = ["Marcel Oliveira Brito"]
+license = "GPL"
+readme = "README.md"
+packages = [{include = "influxdb_py"}]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+PyDrive = "^1.3.1"
+influxdb-client = {extras = ["ciso"], version = "^1.32.0"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
